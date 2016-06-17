@@ -484,6 +484,11 @@ if (!window.clearImmediate) {
       // calculate the acutal font size
       // fontSize === 0 means weightFactor function wants the text skipped,
       // and size < minSize means we cannot draw the text.
+
+      if (word !== null && typeof word === 'object'){
+        word = word.word;
+      }
+
       var debug = false;
       var fontSize = settings.weightFactor(weight);
       if (fontSize <= settings.minSize) {
@@ -777,19 +782,51 @@ if (!window.clearImmediate) {
           if (color) {
             styleRules.color = color;
           }
-          span.textContent = word;
-          for (var cssProp in styleRules) {
-            span.style[cssProp] = styleRules[cssProp];
-          }
-          if (attributes) {
-            for (var attribute in attributes) {
-              span.setAttribute(attribute, attributes[attribute]);
+          if (word !== null && typeof word === 'object'){
+
+            var anchor = document.createElement('a');
+            anchor.textContent =  word.word;
+            anchor.href =  word.href;
+
+            if (word.target){
+              anchor.target = word.target;
             }
+            if (word.rel) {
+              anchor.rel = word.rel;
+            }
+
+            for (var cssProp in styleRules) {
+              anchor.style[cssProp] = styleRules[cssProp];
+            }
+            if (attributes) {
+              for (var attribute in attributes) {
+                anchor.setAttribute(attribute, attributes[attribute]);
+              }
+            }
+            if (classes) {
+              anchor.className += classes;
+            }
+            el.appendChild(anchor);
+
+          }else{
+            span.textContent = word;
+
+            for (var cssProp in styleRules) {
+              span.style[cssProp] = styleRules[cssProp];
+            }
+            if (attributes) {
+              for (var attribute in attributes) {
+                span.setAttribute(attribute, attributes[attribute]);
+              }
+            }
+            if (classes) {
+              span.className += classes;
+            }
+            el.appendChild(span);
+
           }
-          if (classes) {
-            span.className += classes;
-          }
-          el.appendChild(span);
+
+
         }
       });
     };
